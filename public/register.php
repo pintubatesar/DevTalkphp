@@ -21,7 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: index.php');
             exit;
         } catch (PDOException $e) {
-            $error = 'Could not register: ' . $e->getMessage();
+            error_log('Registration failed: ' . $e->getMessage());
+            $error = 'Could not register. Please check your details and try again.';
         }
     }
 }

@@ -79,7 +79,10 @@ render_header($topic['title']);
                         <strong><?= htmlspecialchars($c['username']) ?></strong>
                         · <?= fmt_date($c['created_at']) ?>
                     </span>
-                    <?php if ($user): ?>
+                    <?php if (
+                        $user
+                        && ((int) $c['user_id'] === (int) $user['id'] || (int) $user['is_admin'] === 1)
+                    ): ?>
                         <form method="post" action="delete_comment.php" class="d-inline">
                             <input type="hidden" name="csrf_token"
                                 value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">

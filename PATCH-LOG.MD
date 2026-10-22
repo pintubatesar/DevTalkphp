@@ -38,3 +38,16 @@ Restricts server-side image fetching to public HTTP(S) hosts, rejects
 credentials and non-standard ports, blocks private and reserved IP ranges,
 does not follow redirects, and only returns resources detected as images.
 Fixes lab4 vulnarability #1
+
+Patch #7: Prevent security misconfiguration and exception disclosure
+
+Disables display of PHP errors and startup errors while retaining server-side
+error logging. Replaces registration database exception details with a generic
+user-facing message and logs database errors for administrator troubleshooting.
+
+Patch #8: Enforce content ownership authorization
+
+Restricts comment deletion to the comment author or an administrator and
+hides delete controls from users who do not own the comment. Topic editing and
+deletion and profile bio updates remain restricted to the owning user or an
+administrator.

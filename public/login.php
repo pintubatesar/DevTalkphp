@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $error = 'Invalid username or password.';
     } catch (PDOException $e) {
+        error_log('Login failed: ' . $e->getMessage());
         $error = 'Login failed. Please try again later.';
     }
 }

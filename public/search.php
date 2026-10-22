@@ -21,6 +21,7 @@ if ($q !== '') {
         ]);
         $results = $stmt->fetchAll();
     } catch (PDOException $e) {
+        error_log('Search failed: ' . $e->getMessage());
         $sqlError = 'Search failed. Please try again later.';
     }
 }

@@ -4,6 +4,8 @@ require_login();
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf_token();
+
     $title = trim($_POST['title'] ?? '');
     $body  = $_POST['body'] ?? '';
     $image = trim($_POST['image_url'] ?? '');
@@ -27,6 +29,8 @@ render_header('New Topic');
 <?php if ($error): ?><div class="alert alert-danger"><?= htmlspecialchars($error) ?></div><?php endif; ?>
 
 <form method="post" class="card card-body shadow-sm">
+    <input type="hidden" name="csrf_token"
+        value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
     <div class="mb-3">
         <label class="form-label">Title</label>
         <input name="title" class="form-control" required>

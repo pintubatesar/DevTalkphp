@@ -23,3 +23,10 @@ Escapes user-controlled error messages, search terms, topic bodies, and
 comment bodies before rendering them in HTML. Prevents reflected and stored
 cross-site scripting while preserving the submitted content.
 Fixes lab4 vulnarability #5
+
+Patch #5: Prevent CSRF and unsafe state-changing GET requests
+
+Adds session-backed anti-forgery tokens to state-changing forms and validates
+them on the server. Converts topic, comment, and logout actions from GET to
+POST-only requests, preventing cross-site request forgery for create, edit,
+delete, profile, authentication, and logout actions.

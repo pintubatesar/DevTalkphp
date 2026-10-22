@@ -2,7 +2,14 @@
 require_once __DIR__ . '/../src/helpers.php';
 require_login();
 
-$id = $_GET['id'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    exit('Method not allowed.');
+}
+
+require_csrf_token();
+
+$id = $_POST['id'] ?? '';
 
 $stmt = db()->prepare('SELECT user_id FROM topics WHERE id = ?');
 $stmt->execute([$id]);

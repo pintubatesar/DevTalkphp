@@ -25,6 +25,8 @@ if (!$user || ((int) $topic['user_id'] !== (int) $user['id'] && (int) $user['is_
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf_token();
+
     $title = trim($_POST['title'] ?? '');
     $body  = $_POST['body'] ?? '';
     $image = trim($_POST['image_url'] ?? '');
@@ -42,6 +44,8 @@ render_header('Edit Topic');
 ?>
 <h1 class="h4 mb-3">Edit topic</h1>
 <form method="post" class="card card-body shadow-sm">
+    <input type="hidden" name="csrf_token"
+        value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
     <input type="hidden" name="id" value="<?= (int) $topic['id'] ?>">
     <div class="mb-3">
         <label class="form-label">Title</label>

@@ -3,6 +3,8 @@ require_once __DIR__ . '/../src/helpers.php';
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf_token();
+
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
 
@@ -35,6 +37,8 @@ render_header('Log in');
             <div class="alert alert-danger"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div>
         <?php endif; ?>
         <form method="post" class="card card-body shadow-sm">
+            <input type="hidden" name="csrf_token"
+                value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
             <div class="mb-3">
                 <label class="form-label">Username</label>
                 <input name="username" class="form-control" autofocus>

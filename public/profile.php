@@ -5,6 +5,7 @@ $id = $_GET['id'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_login();
+    require_csrf_token();
 
     $bio    = $_POST['bio'] ?? '';
     $userId = (int) $_SESSION['user_id'];
@@ -48,6 +49,8 @@ render_header($profile['username'] . "'s profile");
 
         <?php if ($me && (int) $me['id'] === (int) $profile['id']): ?>
             <form method="post" class="card card-body shadow-sm">
+                <input type="hidden" name="csrf_token"
+                    value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
                 <label class="form-label">Update bio</label>
                 <textarea name="bio" class="form-control mb-2" rows="3"><?= htmlspecialchars($profile['bio']) ?></textarea>
                 <div><button class="btn btn-sm btn-primary">Save bio</button></div>

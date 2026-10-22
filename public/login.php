@@ -32,7 +32,7 @@ render_header('Log in');
     <div class="col-md-5">
         <h1 class="h4 mb-3">Log in</h1>
         <?php if ($error): ?>
-            <div class="alert alert-danger"><?= $error ?></div>
+            <div class="alert alert-danger"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div>
         <?php endif; ?>
         <form method="post" class="card card-body shadow-sm">
             <div class="mb-3">

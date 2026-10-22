@@ -53,7 +53,7 @@ You can also register your own account from the **Register** page.
 - Public homepage listing forum topics, newest first
 - Read topics and comments without logging in
 - Register and log in
-- Create topics (title + body; HTML and images are supported)
+- Create topics (title + body; plain text and images are supported)
 - Edit and delete topics
 - Comment on topics and delete comments
 - User profiles with a list of their topics

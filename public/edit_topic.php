@@ -15,6 +15,15 @@ if (!$topic) {
     exit;
 }
 
+$user = current_user();
+if (!$user || ((int) $topic['user_id'] !== (int) $user['id'] && (int) $user['is_admin'] !== 1)) {
+    http_response_code(403);
+    render_header('Forbidden');
+    echo '<div class="alert alert-danger">You are not allowed to edit this topic.</div>';
+    render_footer();
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $body  = $_POST['body'] ?? '';

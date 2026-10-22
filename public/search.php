@@ -7,11 +7,21 @@ $results = [];
 $sqlError = '';
 
 if ($q !== '') {
-    $sql = "SELECT id, title, body FROM topics WHERE title LIKE '%$q%' OR body LIKE '%$q%' ORDER BY created_at DESC";
     try {
-        $results = db()->query($sql)->fetchAll();
+        $stmt = db()->prepare(
+            'SELECT id, title, body
+             FROM topics
+             WHERE title LIKE :title_query OR body LIKE :body_query
+             ORDER BY created_at DESC'
+        );
+        $likeQuery = '%' . $q . '%';
+        $stmt->execute([
+            ':title_query' => $likeQuery,
+            ':body_query' => $likeQuery,
+        ]);
+        $results = $stmt->fetchAll();
     } catch (PDOException $e) {
-        $sqlError = $e->getMessage() . ' — query: ' . $sql;
+        $sqlError = 'Search failed. Please try again later.';
     }
 }
 

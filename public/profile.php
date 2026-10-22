@@ -1,14 +1,16 @@
 <?php
 require_once __DIR__ . '/../src/helpers.php';
 
-$id = $_GET['id'] ?? ($_POST['user_id'] ?? '');
+$id = $_GET['id'] ?? '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && is_logged_in()) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_login();
+
     $bio    = $_POST['bio'] ?? '';
-    $userId = $_POST['user_id'] ?? '';
+    $userId = (int) $_SESSION['user_id'];
     $upd = db()->prepare('UPDATE users SET bio = ? WHERE id = ?');
     $upd->execute([$bio, $userId]);
-    header('Location: profile.php?id=' . (int) $userId);
+    header('Location: profile.php?id=' . $userId);
     exit;
 }
 
@@ -44,9 +46,8 @@ render_header($profile['username'] . "'s profile");
             </div>
         </div>
 
-        <?php if ($me): ?>
+        <?php if ($me && (int) $me['id'] === (int) $profile['id']): ?>
             <form method="post" class="card card-body shadow-sm">
-                <input type="hidden" name="user_id" value="<?= (int) $profile['id'] ?>">
                 <label class="form-label">Update bio</label>
                 <textarea name="bio" class="form-control mb-2" rows="3"><?= htmlspecialchars($profile['bio']) ?></textarea>
                 <div><button class="btn btn-sm btn-primary">Save bio</button></div>

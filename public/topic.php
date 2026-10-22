@@ -29,6 +29,8 @@ $cstmt->execute([$id]);
 $comments = $cstmt->fetchAll();
 
 $user = current_user();
+$canManageTopic = $user
+    && ((int) $topic['user_id'] === (int) $user['id'] || (int) $user['is_admin'] === 1);
 
 render_header($topic['title']);
 ?>
@@ -49,7 +51,7 @@ render_header($topic['title']);
 
         <div class="topic-body"><?= $topic['body'] ?></div>
 
-        <?php if ($user): ?>
+        <?php if ($canManageTopic): ?>
             <div class="mt-3 d-flex gap-2">
                 <a class="btn btn-sm btn-outline-secondary"
                     href="edit_topic.php?id=<?= (int) $topic['id'] ?>">Edit</a>

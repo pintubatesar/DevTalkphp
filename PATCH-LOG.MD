@@ -51,3 +51,53 @@ Restricts comment deletion to the comment author or an administrator and
 hides delete controls from users who do not own the comment. Topic editing and
 deletion and profile bio updates remain restricted to the owning user or an
 administrator.
+
+Yes. DevTalk's terminal received `GET /api/me`, and it returned **401 Unauthorized**.
+CORS controls whether a browser exposes the response to JavaScript from another
+origin; it does not prevent the HTTP request from reaching the server or replace
+authentication and authorization.
+
+## Lab 8, Part B: Session cookies and JWT credentials
+
+### Session cookie
+
+The `PHPSESSID` cookie for `http://localhost:8000` is **HttpOnly: true**,
+**Secure: false**, and **SameSite: Lax**. `document.cookie` does not contain
+`PHPSESSID` because the HttpOnly flag prevents JavaScript on the page from
+reading it.
+
+The Messages sign-in stores the API JWT in `localStorage` under
+`devtalk_token`. `signIn()` stores the token returned by `POST /api/login`, and
+`api()` reads it and sends it as `Authorization: Bearer <token>`.
+
+The JWT header contains `alg: HS256` and `typ: JWT`. The payload contains:
+
+- `iss`: the issuer, `devtalk`
+- `sub`: the numeric user ID, `2` for Alice
+- `username`: Alice's account name
+- `email`: Alice's email address
+- `role`: Alice's application role (`user`)
+- `iat`: the issuance time
+- `exp`: the expiration time
+
+`sub`, `username`, and `email` are personal or identifying information. The
+observed token was valid for 28,800 seconds (8 hours), from `iat` to `exp`.
+The payload is only base64url encoded, not encrypted, so anyone holding the
+token can read its claims. A third-party JWT decoder should not receive a real
+token because it is an authentication bearer credential: pasted data could be
+logged or retained, and a promise that decoding happens in-browser does not
+make the token safe to disclose.
+
+Changing the payload's `role` to `admin` produced the API response:
+`{"error":"Invalid or expired token."}`. The server rejected the changed
+payload at the signature comparison in [src/api/jwt.php](/C:/Users/pintu/Downloads/DevTalkphp/src/api/jwt.php:64),
+where `hash_equals()` verifies that the signature matches the header and payload.
+
+For the XSS credential comparison, `localStorage.getItem('devtalk_token')`
+exposes the JWT to injected JavaScript, while `document.cookie` does not expose
+the HttpOnly `PHPSESSID`. A copied token successfully called
+`GET /api/messages` from the terminal with only the bearer header and no cookie.
+After **Sign out of Messages** removed the token from `localStorage`, the same
+copied token still returned Alice's messages. Browser sign-out only removes the
+client copy: the stateless JWT has no server-side revocation and remains valid
+until its `exp` time.

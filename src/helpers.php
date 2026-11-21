@@ -1,6 +1,24 @@
 <?php
 require_once __DIR__ . '/db.php';
 
+header("Content-Security-Policy-Report-Only: default-src 'self'; "
+    . "script-src 'self'; "
+    . "style-src 'self'; "
+    . "img-src 'self' data:; "
+    . "object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'");
+header('X-Frame-Options: DENY');
+header('X-Content-Type-Options: nosniff');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
+header('Strict-Transport-Security: max-age=31536000; includeSubDomains'); // only honoured over HTTPS
+header_remove('X-Powered-By');
+
+session_set_cookie_params([
+    'httponly' => true,
+    'samesite' => 'Lax',
+    // 'secure' => true,   // enable once served over HTTPS
+]);
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -58,7 +76,7 @@ function render_header(string $title = APP_NAME): void
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title><?= htmlspecialchars($title) ?> · <?= APP_NAME ?></title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="assets/bootstrap.min.css" rel="stylesheet">
         <link href="assets/app.css" rel="stylesheet">
     </head>
 
@@ -99,7 +117,8 @@ function render_header(string $title = APP_NAME): void
         <footer class="container text-center text-body-secondary py-4 small">
             <?= APP_NAME ?> — CST8265 lab application. For educational use only.
         </footer>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="assets/bootstrap.bundle.min.js"></script>
+        <script src="assets/app.js" defer></script>
     </body>
 
     </html>
